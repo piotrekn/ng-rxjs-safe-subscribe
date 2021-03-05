@@ -1,0 +1,43 @@
+{
+  "name": "ng-rxjs-safe-subscribe",
+  "version": "9.0.0",
+  "description": "Implementation of Angular's repeatable OnDestroy pattern with RxJS observables",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --config jestconfig.json",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "author": "Piotr Narożnik",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/piotrekn/ng-rxjs-safe-subscribe"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "@angular/core": "^9",
+    "rxjs": "^6"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "jest": "^26.6.3",
+    "prettier": "^2.2.1",
+    "ts-jest": "^26.5.2",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.2.2"
+  }
+}
