@@ -27,6 +27,11 @@
   "directories": {
     "lib": "lib"
   },
+  "keywords": [
+    "angular",
+    "rxjs",
+    "ng"
+  ],
   "dependencies": {
     "@angular/core": "^12.0.0-next",
     "rxjs": "^6"
