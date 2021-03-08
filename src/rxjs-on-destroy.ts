@@ -7,5 +7,6 @@ export abstract class RxjsOnDestroy implements OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.next();
+    this.destroy$.complete();
   }
 }
