@@ -13,16 +13,18 @@ Implementation of <a href="https://angular.io/">Angular's</a> repeatable OnDestr
 
 Bacasue of DRY principle.
 
-One of common mistakes a beginers make and others forget to avoid is to subscribe to an Observable in a fire-and-forget manner:
+One of common mistakes a beginners makes and others forget to avoid is to subscribe to an Observable in a fire-and-forget manner:
 ```
 books$.subscribe(() => doSomething()));
 ```
 
-Rule of thumb is that subscriber should unsubscibe when the values are no longer used. If there is no explicit unsubscribe, then books will be pushed to subscribe function indefinitely. While it may not be the case for some observable sources, it is almost always casues a <i>leaks</i> leading to issues.
+Rule of thumb is that subscriber should unsubscibe when it is not longer using an observable. If there is no explicit unsubscribe, then books will be pushed to subscribe function indefinitely. While it may not be the case for some observable sources, it almost always doeas. Finally it casues a <i>leaks</i> leading to unwanted behaviuors.
 
-There a few way to deal with it:
-1. unsubscribe directly from subscribtion - it'll unsubscribe all subscribers
-2. unsubscribe with an operator takeUntil, takeWhile - safer, it'll unsubscribe single subscribtion
+There a few way to deal with it unsubscribe:
+1. calling directly unsubscribe() on subscribtion
+2. using operator: takeUntil, takeWhile - 
+3. taking single value: first, take(n) - it'll unsubscribe after 1 or n emits, and only then
+4. async pipe in html template - takes care of the issue automagically
 
 Package `ng-rxjs-safe-subscribe` provides ready and easy to use solution for your every Angular project.
 
@@ -32,7 +34,7 @@ Package `ng-rxjs-safe-subscribe` provides ready and easy to use solution for you
 Install `ng-rxjs-safe-subscribe` from `npm`:
 
 ```bash
-npm install ng-rxjs-safe-subscribe --save
+npm install ng-rxjs-safe-subscribe
 ```
 
 Import an abstract class:
