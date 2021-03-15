@@ -11,19 +11,19 @@ Implementation of <a href="https://angular.io/">Angular's</a> repeatable OnDestr
 
 ## Why do I need it?
 
-Bacasue of DRY principle.
+Bacasue of DRY principle. For once.
 
-One of common mistakes a beginners makes and others forget to avoid is to subscribe to an Observable in a fire-and-forget manner:
+Also, one of the most common mistakes beginners make with RxJs and others may forget to avoid is to subscribe to an Observable in a fire-and-forget manner like so:
 ```
 books$.subscribe(() => doSomething()));
 ```
 
-Rule of thumb is that subscriber should unsubscibe when it is not longer using an observable. If there is no explicit unsubscribe, then books will be pushed to subscribe function indefinitely. While it may not be the case for some observable sources, it almost always doeas. Finally it casues a <i>leaks</i> leading to unwanted behaviuors.
+Rule of thumb is that a subscriber should unsubscibe when he's no longer using an observable. If there is no explicit unsubscribe, then those books will be pushed to subscribe function indefinitely. While it may not be the case for some observable sources, it almost always doeas. Finally it casues a <i>leaks</i> leading to unwanted behaviuors.
 
 There a few way to deal with it unsubscribe:
 1. calling directly unsubscribe() on subscribtion
-2. using operator: takeUntil, takeWhile - 
-3. taking single value: first, take(n) - it'll unsubscribe after 1 or n emits, and only then
+2. using operator: takeUntil, takeWhile
+3. taking finite number of values: first, take(n) - it'll unsubscribe after n emits, and only then
 4. async pipe in html template - takes care of the issue automagically
 
 Package `ng-rxjs-safe-subscribe` provides ready and easy to use solution for your every Angular project.
@@ -47,7 +47,7 @@ Extend the class with `RxjsOnDestroy` that implements `OnDestroy` hook.
 export class AppComponent extends RxjsOnDestroy
 ```
 
-Subscibe safely like so:
+Subscibe safely:
 ```
 this.users$.safeSubscribe(rxjsOnDestroyInstance, (x) => console.log(x));
 ```
