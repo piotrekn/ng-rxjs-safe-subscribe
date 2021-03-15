@@ -2,7 +2,7 @@ import { Observable, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { RxjsOnDestroy } from './rxjs-on-destroy';
 
-export function safeSubscribe<T>(
+export function subscribeSafely<T>(
   this: any,
   classRef: RxjsOnDestroy,
   next?: (value: T) => void,
@@ -14,20 +14,47 @@ export function safeSubscribe<T>(
   }
 
   // tslint:disable-next-line: no-string-literal
-  if (typeof classRef.ngOnDestroy !== 'function' || classRef['destroy$'] == null) {
+  if (typeof classRef.ngOnDestroy !== 'function' || classRef['destroySubscribtion'] == null) {
     throw Error(
       `${classRef.constructor.name} - missing NgOnDestroy function, extend from ${RxjsOnDestroy.constructor.name}`,
     );
   }
 
+  const subscribtion = this.subscribe(next, error, complete);
   // tslint:disable-next-line: no-string-literal
-  return this.pipe(takeUntil(classRef['destroy$'])).subscribe(next, error, complete);
+  classRef['destroySubscribtion'].add(subscribtion);
+  return subscribtion;
+}
+
+export function subscribeUntil<T>(
+  this: any,
+  unsubscribeToken: Observable<any>,
+  next?: (value: T) => void,
+  error?: (error: any) => void,
+  complete?: () => void,
+): Subscription {
+  if (typeof unsubscribeToken !== 'object') {
+    throw new Error(`Token cannot be null. Consider using '${subscribeSafely.name}' instead.`);
+  }
+
+  // tslint:disable-next-line: no-string-literal
+  if (typeof unsubscribeToken.subscribe !== 'function') {
+    throw Error(`Is '${unsubscribeToken.constructor.name}' value passed really the Observable or Subject?`);
+  }
+
+  // tslint:disable-next-line: no-string-literal
+  return this.pipe(takeUntil(unsubscribeToken)).subscribe(next, error, complete);
 }
 
 declare module 'rxjs/internal/Observable' {
   interface Observable<T> {
-    safeSubscribe: typeof safeSubscribe;
+    /** @deprecated it'll be removed in future updates. Use subscribeSafely alias */
+    safeSubscribe: typeof subscribeSafely;
+    subscribeSafely: typeof subscribeSafely;
+    subscribeUntil: typeof subscribeUntil;
   }
 }
 
-Observable.prototype.safeSubscribe = safeSubscribe;
+Observable.prototype.safeSubscribe = subscribeSafely;
+Observable.prototype.subscribeSafely = subscribeSafely;
+Observable.prototype.subscribeUntil = subscribeUntil;

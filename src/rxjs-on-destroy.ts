@@ -1,12 +1,11 @@
 import { Directive, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Directive()
 export abstract class RxjsOnDestroy implements OnDestroy {
-  protected destroy$ = new Subject<boolean>();
+  protected destroySubscribtion = new Subscription();
 
   ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.destroySubscribtion.unsubscribe();
   }
 }
