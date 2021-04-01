@@ -14,16 +14,16 @@ function subscribeSafely<T>(
   }
 
   // tslint:disable-next-line: no-string-literal
-  if (typeof classRef.ngOnDestroy !== 'function' || classRef['destroySubscribtion'] == null) {
+  if (typeof classRef.ngOnDestroy !== 'function' || classRef['destroySubscription'] == null) {
     throw Error(
       `${classRef.constructor.name} - missing NgOnDestroy function, extend from ${RxjsOnDestroy.constructor.name}`,
     );
   }
 
-  const subscribtion = this.subscribe(next, error, complete);
+  const subscription = this.subscribe(next, error, complete);
   // tslint:disable-next-line: no-string-literal
-  classRef['destroySubscribtion'].add(subscribtion);
-  return subscribtion;
+  classRef['destroySubscription'].add(subscription);
+  return subscription;
 }
 
 function subscribeUntil<T>(

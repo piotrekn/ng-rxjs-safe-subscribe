@@ -46,7 +46,7 @@ describe('RxjsOnDestroy', () => {
       testSafeSubscribe(subject, counter, component);
     });
 
-    it('should work not unsubscribe other subscribtions ', () => {
+    it('should work not unsubscribe other subscriptions ', () => {
       const counter2 = new Counter();
 
       const observable = subject.pipe(shareReplay());
@@ -110,7 +110,7 @@ describe('RxjsOnDestroy', () => {
       testSafeSubscribeUntil(component.destroySpy, subject, counter, component);
     });
 
-    it('should work not unsubscribe other subscribtions ', () => {
+    it('should work not unsubscribe other subscriptions ', () => {
       const counter2 = new Counter();
 
       const observable = subject.pipe(shareReplay());

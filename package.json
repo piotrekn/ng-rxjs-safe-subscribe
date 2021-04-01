@@ -1,13 +1,13 @@
 {
   "name": "ng-rxjs-safe-subscribe",
-  "version": "12.0.0-next.1",
+  "version": "12.0.0-next.3",
   "description": "Implementation of Angular's repeatable OnDestroy pattern with RxJS observables",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "jest --config jest.config.json",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
     "prepublishOnly": "npm run lint",
