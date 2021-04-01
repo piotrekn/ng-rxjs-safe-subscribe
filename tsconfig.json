@@ -1,15 +1,25 @@
 {
-    "compilerOptions": {
-      "experimentalDecorators": true,
-      "target": "es2015",
-      "module": "es2020",
-      "moduleResolution": "node",
-      "lib": ["es2017", "es7", "es6", "dom"],
-      "declaration": true,
-      "strict": true,
-      "esModuleInterop": true,
-      "outDir": "./lib",
-    },
-    "include": ["src"],
-    "exclude": ["node_modules", "src/**/*.spec.ts"]
-  }
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "target": "es2015",
+    "module": "es2020",
+    "moduleResolution": "node",
+    "lib": [
+      "es2017",
+      "es7",
+      "es6",
+      "dom"
+    ],
+    "declaration": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "outDir": "./lib",
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/tests/**/*.ts"
+  ]
+}
