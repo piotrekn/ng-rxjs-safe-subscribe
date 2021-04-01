@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { count, map, shareReplay, toArray } from 'rxjs/operators';
 import '../observable.extension';
 import { RxjsOnDestroy } from '../rxjs-on-destroy';
@@ -20,6 +20,18 @@ describe('RxjsOnDestroy', () => {
 
     beforeEach(() => {
       component = new TestComponent();
+    });
+
+    it('should use generic type in subscribe', () => {
+      const mockFunction = (_: number) => {};
+      of(1).subscribeSafely(component, (n) => {
+        mockFunction(n);
+      });
+
+      of(1).subscribeUntil(of(true), (n) => {
+        mockFunction(n);
+      });
+      expect.anything();
     });
 
     it('should unsubscribe', () => {
@@ -62,7 +74,7 @@ describe('RxjsOnDestroy', () => {
     });
 
     it('should work with "count"', () => {
-      subject.pipe(count()).subscribeSafely(component, (n: number) => counter.assign(n));
+      subject.pipe(count()).subscribeSafely(component, (n) => counter.assign(n));
 
       testSafeSubscribeWhenCompleted(subject, counter, component);
     });
@@ -73,7 +85,7 @@ describe('RxjsOnDestroy', () => {
           toArray(),
           map((x) => x.length),
         )
-        .subscribeSafely(component, (n: number) => counter.assign(n));
+        .subscribeSafely(component, (n) => counter.assign(n));
 
       testSafeSubscribeWhenCompleted(subject, counter, component);
     });

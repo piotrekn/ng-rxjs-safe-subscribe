@@ -2,8 +2,8 @@ import { Observable, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { RxjsOnDestroy } from './rxjs-on-destroy';
 
-export function subscribeSafely<T>(
-  this: any,
+function subscribeSafely<T>(
+  this: Observable<T>,
   classRef: RxjsOnDestroy,
   next?: (value: T) => void,
   error?: (error: any) => void,
@@ -26,8 +26,8 @@ export function subscribeSafely<T>(
   return subscribtion;
 }
 
-export function subscribeUntil<T>(
-  this: any,
+function subscribeUntil<T>(
+  this: Observable<T>,
   unsubscribeToken: Observable<any>,
   next?: (value: T) => void,
   error?: (error: any) => void,
@@ -49,9 +49,27 @@ export function subscribeUntil<T>(
 declare module 'rxjs/internal/Observable' {
   interface Observable<T> {
     /** @deprecated it'll be removed in future updates. Use subscribeSafely alias */
-    safeSubscribe: typeof subscribeSafely;
-    subscribeSafely: typeof subscribeSafely;
-    subscribeUntil: typeof subscribeUntil;
+    safeSubscribe(
+      this: Observable<T>,
+      classRef: RxjsOnDestroy,
+      next?: ((value: T) => void) | undefined,
+      error?: ((error: any) => void) | undefined,
+      complete?: (() => void) | undefined,
+    ): Subscription;
+    subscribeSafely(
+      this: Observable<T>,
+      classRef: RxjsOnDestroy,
+      next?: ((value: T) => void) | undefined,
+      error?: ((error: any) => void) | undefined,
+      complete?: (() => void) | undefined,
+    ): Subscription;
+    subscribeUntil(
+      this: Observable<T>,
+      unsubscribeToken: Observable<any>,
+      next?: (value: T) => void,
+      error?: (error: any) => void,
+      complete?: () => void,
+    ): Subscription;
   }
 }
 
