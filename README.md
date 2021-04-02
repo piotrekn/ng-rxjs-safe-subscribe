@@ -52,7 +52,7 @@ export class AppComponent extends RxjsOnDestroy
 
 ## 1. Unsubscribe with a sink
 
-Subscibe safely, pass object which extends RxjsOnDestroy abstract class:
+Subscribe safely, pass object which extends RxjsOnDestroy abstract class:
 
 ```
 this.users$.safeSubscribe(rxjsOnDestroyInstance, (x) => console.log(x));
