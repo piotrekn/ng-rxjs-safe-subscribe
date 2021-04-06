@@ -1,7 +1,7 @@
 <h1 align="center">ng-rxjs-safe-subscribe</h1>
 
 <p align="center">
-Implementation of <a href="https://angular.io/">Angular's</a> repeatable OnDestroy pattern with <a href="https://rxjs-dev.firebaseapp.com/guide/overview/">RxJs</a> observables.
+Implementation of <a href="https://angular.io/">Angular's</a> repeatable OnDestroy pattern.
 </p>
 
 <p align="center">
@@ -11,24 +11,27 @@ Implementation of <a href="https://angular.io/">Angular's</a> repeatable OnDestr
 
 # Why do I need it?
 
-Bacasue of DRY principle. For once.
+Because of DRY principle, for once.
 
 Also, one of the most common mistakes beginners make with RxJs and others may forget to avoid is to subscribe to an Observable in a fire-and-forget manner like so:
 
 ```
-books$.subscribe(() => doSomething()));
+books$.subscribe(() => doSomething());
 ```
 
-Rule of thumb is that a subscriber should unsubscibe when he's no longer using an observable. If there is no explicit unsubscribe, then those books will be pushed to subscribe function indefinitely. While it may not be the case for some observable sources, it almost always doeas. Finally it casues a <i>leaks</i> leading to unwanted behaviuors.
+Rule of thumb is that a subscriber should unsubscribe when no longer using an observable. If there is no explicit unsubscribe, then those books will be pushed to subscribe function infinitely. While it may not be the case for some observable sources, it almost always is. Finally, it causes a <i>leaks</i> leading to unwanted behaviors.
 
-There a few way to deal with it unsubscribe:
+There are few ways to deal with unsubscribe. A direct:
 
-1. calling directly unsubscribe() on subscription
-2. using operator: takeUntil, takeWhile (declarative unsubscribe)
-3. taking finite number of values: first, take(n) - it'll unsubscribe after n emits, and only then
-4. async pipe in html template - takes care of the issue automagically
+1. calling unsubscribe() directly on subscription.
 
-Package `ng-rxjs-safe-subscribe` provides ready and easy to use solution for your every Angular project.
+... or more declarative one using <a href="https://rxjs-dev.firebaseapp.com/guide/overview/">RxJs</a>:
+
+2. using operator: takeUntil, takeWhile (declarative unsubscribe),
+3. taking a finite number of values: first, take(n) - it'll unsubscribe after n emits, and only then,
+4. async pipe in HTML template - takes care of the issue automagically.
+
+Package `ng-rxjs-safe-subscribe` provides a ready and easy to use solution for your every Angular project.
 
 # Installation instructions
 
@@ -118,12 +121,12 @@ Read up [Ben Lesh's article](https://medium.com/@benlesh/rxjs-dont-unsubscribe-6
 The only two dependencies are [Angular](https://angular.io) and [RxJs](https://rxjs-dev.firebaseapp.com/guide/overview).
 Here is the versions compatibility list:
 
-| ng-rxjs-safe-subscribe | Angular     | RxJs  |
-| ---------------------- | ----------- | ----- |
-| 12.x.x-next            | 12.x.x-next | 6.x.x |
-| 11.x.x                 | 11.x.x      | 6.x.x |
-| 10.x.x                 | 10.x.x      | 6.x.x |
-| 9.x.x                  | 9.x.x       | 6.x.x |
+| ng-rxjs-safe-subscribe | Angular       | RxJs  |
+| ---------------------- | ------------- | ----- |
+| 12.x.x-next.x          | 12.x.x-next.x | 6.x.x |
+| 11.x.x                 | 11.x.x        | 6.x.x |
+| 10.x.x                 | 10.x.x        | 6.x.x |
+| 9.x.x                  | 9.x.x         | 6.x.x |
 
 # License
 
