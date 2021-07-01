@@ -138,12 +138,12 @@ Read up [Ben Lesh's article](https://medium.com/@benlesh/rxjs-dont-unsubscribe-6
 The only two dependencies are [Angular](https://angular.io) and [RxJs](https://rxjs-dev.firebaseapp.com/guide/overview).
 Here is the versions compatibility list:
 
-| ng-rxjs-safe-subscribe | Angular       | RxJs  |
-| ---------------------- | ------------- | ----- |
-| 12.x.x-next.x          | 12.x.x-next.x | 6.x.x |
-| 11.x.x                 | 11.x.x        | 6.x.x |
-| 10.x.x                 | 10.x.x        | 6.x.x |
-| 9.x.x                  | 9.x.x         | 6.x.x |
+| ng-rxjs-safe-subscribe | Angular | RxJs  |
+| ---------------------- | ------- | ----- |
+| 12.x.x                 | 12.x.x  | 6.x.x |
+| 11.x.x                 | 11.x.x  | 6.x.x |
+| 10.x.x                 | 10.x.x  | 6.x.x |
+| 9.x.x                  | 9.x.x   | 6.x.x |
 
 # License
 
