@@ -1,4 +1,4 @@
-import { of, Subject } from 'rxjs';
+import { merge, of, Subject } from 'rxjs';
 import { count, map, shareReplay, toArray } from 'rxjs/operators';
 import '../observable.extension';
 import { RxjsOnDestroy } from '../rxjs-on-destroy';
@@ -98,14 +98,35 @@ describe('RxjsOnDestroy', () => {
       component = new UntilTestComponent();
     });
 
+    it('should unsubscribe using passed observable', () => {
+      const cancel$ = new Subject<boolean>();
+      const destroy$ = new Subject<boolean>();
+      const stop$ = merge(cancel$, destroy$);
+
+      expect(counter.count).toBe(0);
+      subject.subscribeUntil(stop$, () => (counter.count += 1));
+      subject.subscribeUntil(destroy$, () => (counter.count += 10));
+
+      subject.next(1);
+      expect(counter.count).toBe(11);
+
+      cancel$.next();
+      subject.next(2);
+      expect(counter.count).toBe(21);
+
+      destroy$.next();
+      subject.next(2);
+      expect(counter.count).toBe(21);
+    });
+
     it('should unsubscribe', () => {
-      subject.subscribeUntil(component.destroy$, () => counter.increment());
+      subject.subscribeUntil(component.destroyExposed$, () => counter.increment());
 
       testSafeSubscribeUntil(component.destroySpy, subject, counter, component);
     });
 
     it('should work with shareReplay', () => {
-      subject.pipe(shareReplay()).subscribeUntil(component.destroy$, () => counter.increment());
+      subject.pipe(shareReplay()).subscribeUntil(component.destroyExposed$, () => counter.increment());
 
       testSafeSubscribeUntil(component.destroySpy, subject, counter, component);
     });
@@ -115,7 +136,7 @@ describe('RxjsOnDestroy', () => {
 
       const observable = subject.pipe(shareReplay());
 
-      observable.subscribeUntil(component.destroy$, () => counter.increment());
+      observable.subscribeUntil(component.destroyExposed$, () => counter.increment());
 
       observable.subscribe(() => counter2.increment());
 
@@ -130,13 +151,13 @@ describe('RxjsOnDestroy', () => {
     });
 
     it('should work with shareReplay', () => {
-      subject.pipe(shareReplay()).subscribeUntil(component.destroy$, () => counter.increment());
+      subject.pipe(shareReplay()).subscribeUntil(component.destroyExposed$, () => counter.increment());
 
       testSafeSubscribeUntil(component.destroySpy, subject, counter, component);
     });
 
     it('should work with "count"', () => {
-      subject.pipe(count()).subscribeUntil(component.destroy$, (n: number) => counter.assign(n));
+      subject.pipe(count()).subscribeUntil(component.destroyExposed$, (n: number) => counter.assign(n));
 
       testSafeSubscribeWhenCompleted(subject, counter, component);
     });
@@ -147,7 +168,7 @@ describe('RxjsOnDestroy', () => {
           toArray(),
           map((x) => x.length),
         )
-        .subscribeUntil(component.destroy$, (n: number) => counter.assign(n));
+        .subscribeUntil(component.destroyExposed$, (n: number) => counter.assign(n));
 
       testSafeSubscribeWhenCompleted(subject, counter, component);
     });

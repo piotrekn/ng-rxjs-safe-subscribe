@@ -53,6 +53,8 @@ Extend the class with `RxjsOnDestroy` that implements `OnDestroy` hook.
 export class AppComponent extends RxjsOnDestroy
 ```
 
+Finally, use one of the following approaches to subscribe in code using `Observable.safeSubscribe` or `Observable.subscribeUntil` function.
+
 ## 1. Unsubscribe with a sink
 
 Subscribe safely, pass object which extends RxjsOnDestroy abstract class:
@@ -70,15 +72,15 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  templateUrl: './app.component.html'
 })
 export class AppComponent extends RxjsOnDestroy {
   users$: Observable<User[]>;
 
-  constructor() {
+  constructor(private userService: UserService) {
     super();
 
+    this.users$ = this.userService.getUsers();
     this.users$.safeSubscribe(this, (x) => console.log(x));
   }
 }
@@ -95,20 +97,33 @@ this.users$.subscribeUntil(destroy$, (x) => console.log(x));
 Full example:
 
 ```
-onMount() {
-   const data$ = this.getData();
-   const cancelBtn = this.element.querySelector('.cancel-button');
-   const rangeSelector = this.element.querySelector('.rangeSelector');
-   const cancel$ = Observable.fromEvent(cancelBtn, 'click');
-   const range$ = Observable.fromEvent(rangeSelector, 'change').map(e => e.target.value);
+import { Component } from '@angular/core';
+import { RxjsOnDestroy } from 'ng-rxjs-safe-subscribe';
+import { Observable, fromEvent, merge } from 'rxjs';
 
-   const stop$ = Observable.merge(cancel$, range$.filter(x => x > 500))
-   this.subscription = data$.takeUntil(stop$).subscribe(data => this.updateData(data));
- }
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent extends RxjsOnDestroy {
+  users$: Observable<User[]>;
 
- onUnmount() {
-  this.subscription.unsubscribe();
+  constructor(private userService: UserService) {
+    super();
+
+    this.users$ = this.userService.getUsers();
+
+    const cancelBtn = this.element.querySelector('.cancel-button');
+    const cancel$ = fromEvent(cancelBtn, 'click');
+    const stop$ = merge(cancel$, this.destroy$)
+
+    // will stop when button clicked or component destroyed
+    this.users$.subscribeUntil(stop$, (x) => console.log(x));
+
+    // will stop when component destroyed
+    this.users$.subscribeUntil(this.destroy$, (x) => console.log(x));
  }
+}
 
 ```
 
