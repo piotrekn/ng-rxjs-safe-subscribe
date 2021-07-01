@@ -15,7 +15,7 @@ describe('RxjsOnDestroy', () => {
     subject = new Subject<number>();
   });
 
-  describe('safeSubscribe', () => {
+  describe('subscribeSafely', () => {
     let component: TestComponent;
 
     beforeEach(() => {
@@ -37,13 +37,13 @@ describe('RxjsOnDestroy', () => {
     it('should unsubscribe', () => {
       subject.subscribeSafely(component, () => counter.increment());
 
-      testSafeSubscribe(subject, counter, component);
+      testSubscribeSafely(subject, counter, component);
     });
 
     it('should work with shareReplay', () => {
       subject.pipe(shareReplay()).subscribeSafely(component, () => counter.increment());
 
-      testSafeSubscribe(subject, counter, component);
+      testSubscribeSafely(subject, counter, component);
     });
 
     it('should work not unsubscribe other subscriptions ', () => {
@@ -57,7 +57,7 @@ describe('RxjsOnDestroy', () => {
         counter2.increment();
       });
 
-      testSafeSubscribe(subject, counter, component);
+      testSubscribeSafely(subject, counter, component);
 
       expect(counter2.count).toBe(2);
       expect(counter.count).toBe(1);
@@ -70,13 +70,13 @@ describe('RxjsOnDestroy', () => {
     it('should work with shareReplay', () => {
       subject.pipe(shareReplay()).subscribeSafely(component, () => counter.increment());
 
-      testSafeSubscribe(subject, counter, component);
+      testSubscribeSafely(subject, counter, component);
     });
 
     it('should work with "count"', () => {
       subject.pipe(count()).subscribeSafely(component, (n) => counter.assign(n));
 
-      testSafeSubscribeWhenCompleted(subject, counter, component);
+      testSubscribeSafelyWhenCompleted(subject, counter, component);
     });
 
     it('should work with "toArray"', () => {
@@ -87,7 +87,7 @@ describe('RxjsOnDestroy', () => {
         )
         .subscribeSafely(component, (n) => counter.assign(n));
 
-      testSafeSubscribeWhenCompleted(subject, counter, component);
+      testSubscribeSafelyWhenCompleted(subject, counter, component);
     });
   });
 
@@ -122,13 +122,13 @@ describe('RxjsOnDestroy', () => {
     it('should unsubscribe', () => {
       subject.subscribeUntil(component.destroyExposed$, () => counter.increment());
 
-      testSafeSubscribeUntil(component.destroySpy, subject, counter, component);
+      testSubscribeSafelyUntil(component.destroySpy, subject, counter, component);
     });
 
     it('should work with shareReplay', () => {
       subject.pipe(shareReplay()).subscribeUntil(component.destroyExposed$, () => counter.increment());
 
-      testSafeSubscribeUntil(component.destroySpy, subject, counter, component);
+      testSubscribeSafelyUntil(component.destroySpy, subject, counter, component);
     });
 
     it('should work not unsubscribe other subscriptions ', () => {
@@ -140,7 +140,7 @@ describe('RxjsOnDestroy', () => {
 
       observable.subscribe(() => counter2.increment());
 
-      testSafeSubscribeUntil(component.destroySpy, subject, counter, component);
+      testSubscribeSafelyUntil(component.destroySpy, subject, counter, component);
 
       expect(counter2.count).toBe(2);
       expect(counter.count).toBe(1);
@@ -153,13 +153,13 @@ describe('RxjsOnDestroy', () => {
     it('should work with shareReplay', () => {
       subject.pipe(shareReplay()).subscribeUntil(component.destroyExposed$, () => counter.increment());
 
-      testSafeSubscribeUntil(component.destroySpy, subject, counter, component);
+      testSubscribeSafelyUntil(component.destroySpy, subject, counter, component);
     });
 
     it('should work with "count"', () => {
       subject.pipe(count()).subscribeUntil(component.destroyExposed$, (n: number) => counter.assign(n));
 
-      testSafeSubscribeWhenCompleted(subject, counter, component);
+      testSubscribeSafelyWhenCompleted(subject, counter, component);
     });
 
     it('should work with "toArray"', () => {
@@ -170,12 +170,12 @@ describe('RxjsOnDestroy', () => {
         )
         .subscribeUntil(component.destroyExposed$, (n: number) => counter.assign(n));
 
-      testSafeSubscribeWhenCompleted(subject, counter, component);
+      testSubscribeSafelyWhenCompleted(subject, counter, component);
     });
   });
 });
 
-function testSafeSubscribe(subject: Subject<number>, counter: Counter, component: RxjsOnDestroy) {
+function testSubscribeSafely(subject: Subject<number>, counter: Counter, component: RxjsOnDestroy) {
   // start point
   expect(counter.count).toBe(0);
 
@@ -191,13 +191,18 @@ function testSafeSubscribe(subject: Subject<number>, counter: Counter, component
   expect(counter.count).toBe(1);
 }
 
-function testSafeSubscribeUntil(destroySpy: any, subject: Subject<number>, counter: Counter, component: RxjsOnDestroy) {
+function testSubscribeSafelyUntil(
+  destroySpy: any,
+  subject: Subject<number>,
+  counter: Counter,
+  component: RxjsOnDestroy,
+) {
   expect(destroySpy).toBeCalledTimes(0);
-  testSafeSubscribe(subject, counter, component);
+  testSubscribeSafely(subject, counter, component);
   expect(destroySpy).toBeCalledTimes(1);
 }
 
-function testSafeSubscribeWhenCompleted(subject: Subject<number>, counter: Counter, component: RxjsOnDestroy) {
+function testSubscribeSafelyWhenCompleted(subject: Subject<number>, counter: Counter, component: RxjsOnDestroy) {
   // start point
   expect(counter.count).toBe(0);
 

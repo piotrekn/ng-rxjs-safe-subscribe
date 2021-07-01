@@ -53,14 +53,14 @@ Extend the class with `RxjsOnDestroy` that implements `OnDestroy` hook.
 export class AppComponent extends RxjsOnDestroy
 ```
 
-Finally, use one of the following approaches to subscribe in code using `Observable.safeSubscribe` or `Observable.subscribeUntil` function.
+Finally, use one of the following approaches to subscribe in code using `Observable.subscribeSafely` or `Observable.subscribeUntil` function.
 
 ## 1. Unsubscribe with a sink
 
 Subscribe safely, pass object which extends RxjsOnDestroy abstract class:
 
 ```
-this.users$.safeSubscribe(rxjsOnDestroyInstance, (x) => console.log(x));
+this.users$.subscribeSafely(rxjsOnDestroyInstance, (x) => console.log(x));
 ```
 
 Full example:
@@ -81,7 +81,7 @@ export class AppComponent extends RxjsOnDestroy {
     super();
 
     this.users$ = this.userService.getUsers();
-    this.users$.safeSubscribe(this, (x) => console.log(x));
+    this.users$.subscribeSafely(this, (x) => console.log(x));
   }
 }
 ```
@@ -91,8 +91,10 @@ export class AppComponent extends RxjsOnDestroy {
 You may pass an observable instance that triggers unsubscribe by passing a value and completion:
 
 ```
-this.users$.subscribeUntil(destroy$, (x) => console.log(x));
+this.users$.subscribeUntil(this.destroy$, (x) => console.log(x));
 ```
+
+The example uses `this.destroy$` of `RxjsOnDestroy` class.
 
 Full example:
 
