@@ -5,8 +5,8 @@ Implementation of <a href="https://angular.io/">Angular's</a> repeatable OnDestr
 </p>
 
 <p align="center">
-    <a href="https://badge.fury.io/js/ngx-bootstrap"><img src="https://badge.fury.io/js/ng-rxjs-safe-subscribe.svg" alt="npm version" ></a>
-    <a href="https://npmjs.org/ngx-bootstrap"><img src="https://img.shields.io/npm/dm/ng-rxjs-safe-subscribe.svg" alt="npm downloads" ></a>
+    <a href="https://badge.fury.io/js/ng-rxjs-safe-subscribe"><img src="https://badge.fury.io/js/ng-rxjs-safe-subscribe.svg" alt="npm version" ></a>
+    <a href="https://npmjs.org/ng-rxjs-safe-subscribe"><img src="https://img.shields.io/npm/dm/ng-rxjs-safe-subscribe.svg" alt="npm downloads" ></a>
 </p>
 
 # Why do I need it?
