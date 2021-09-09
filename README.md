@@ -55,6 +55,20 @@ export class AppComponent extends RxjsOnDestroy
 
 Finally, use one of the following approaches to subscribe in code using `Observable.subscribeSafely` or `Observable.subscribeUntil` function.
 
+## How to execute custom logic at `ngOnDestroy`
+
+Consider overriding the `ngOnDestroyPostAction()` function to execute a callback function at the very end of the `ngOnDestroy` function.
+
+The `ngOnDestroy` function can be also easily overridden, but be sure to <u>always call the base function</u> for `RxjsOnDestroy` to unsubscribe properly:
+
+```
+    override ngOnDestroy(){
+        super.ngOnDestroy();
+
+        ...
+    }
+```
+
 ## 1. Unsubscribe with a sink
 
 Subscribe safely, pass object which extends RxjsOnDestroy abstract class:

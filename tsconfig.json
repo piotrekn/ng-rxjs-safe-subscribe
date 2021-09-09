@@ -14,6 +14,7 @@
     "strict": true,
     "esModuleInterop": true,
     "outDir": "./lib",
+    "noImplicitOverride": true
   },
   "include": [
     "src"

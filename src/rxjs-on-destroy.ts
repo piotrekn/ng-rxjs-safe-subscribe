@@ -9,10 +9,14 @@ export abstract class RxjsOnDestroy implements OnDestroy {
   protected destroySubscription = new Subscription();
   protected destroy$ = new Subject<boolean>();
 
+  // tslint:disable-next-line: no-empty
+  ngOnDestroyPostAction() {}
+
   ngOnDestroy() {
     this.destroySubscription.unsubscribe();
-
     this.destroy$.next();
     this.destroy$.complete();
+
+    this.ngOnDestroyPostAction();
   }
 }
