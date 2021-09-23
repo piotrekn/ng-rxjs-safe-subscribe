@@ -14,7 +14,12 @@ describe('RxjsOnDestroy', () => {
   });
 
   it('should call ngOnDestroy and post action', () => {
-    const expectedExecutionOrder = ['ngOnDestroy', 'ngOnPostDestroy', 'override ngOnDestroy'];
+    const expectedExecutionOrder = [
+      'ngOnDestroy',
+      'myNgOnDestroyPostAction',
+      'ngOnPostDestroy',
+      'override ngOnDestroy',
+    ];
     const component = new TestPostActionComponent();
     subject.subscribeSafely(component, () => counter.increment());
     component.exposedDestroy$.subscribe();
@@ -27,7 +32,7 @@ describe('RxjsOnDestroy', () => {
     expect(counter.count).toBe(1);
   });
 
-  it('should fail to unsubscribe, when overriding ngOnDestroy ALWAYS super.ngOnDestroy()', () => {
+  it('should fail to unsubscribe, when overriding ngOnDestroy is missing super.ngOnDestroy()', () => {
     const component = new TestIncorrectComponent();
     subject.subscribeSafely(component, () => counter.increment());
 

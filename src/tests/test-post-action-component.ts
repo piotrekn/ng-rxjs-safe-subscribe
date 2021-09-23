@@ -5,12 +5,20 @@ import { RxjsOnDestroy } from '../rxjs-on-destroy';
 export class TestPostActionComponent extends RxjsOnDestroy {
   order: string[] = [];
 
+  constructor() {
+    super(() => this.myNgOnDestroyPostAction());
+  }
+
   get exposedDestroy$(): Observable<boolean> {
     return this.destroy$.pipe(tap(() => this.order.push('ngOnDestroy')));
   }
 
   override ngOnDestroyPostAction() {
     this.order.push('ngOnPostDestroy');
+  }
+
+  private myNgOnDestroyPostAction() {
+    this.order.push('myNgOnDestroyPostAction');
   }
 
   override ngOnDestroy() {
