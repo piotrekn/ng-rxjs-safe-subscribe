@@ -7,6 +7,7 @@ Implementation of <a href="https://angular.io/">Angular's</a> repeatable OnDestr
 <p align="center">
     <a href="https://badge.fury.io/js/ng-rxjs-safe-subscribe"><img src="https://badge.fury.io/js/ng-rxjs-safe-subscribe.svg" alt="npm version" ></a>
     <a href="https://npmjs.org/ng-rxjs-safe-subscribe"><img src="https://img.shields.io/npm/dm/ng-rxjs-safe-subscribe.svg" alt="npm downloads" ></a>
+    <a href="https://wallabyjs.com/oss/"><img src="https://img.shields.io/badge/wallaby.js-powered-blue.svg?style=flat&logo=github" alt="wallaby" ></a>
 </p>
 
 # Why do I need it?
@@ -154,6 +155,7 @@ Here is the versions compatibility list:
 
 | ng-rxjs-safe-subscribe | Angular | RxJs  |
 | ---------------------- | ------- | ----- |
+| 13.x.x                 | 13.x.x  | 7.x.x |
 | 12.x.x                 | 12.x.x  | 6.x.x |
 | 11.x.x                 | 11.x.x  | 6.x.x |
 | 10.x.x                 | 10.x.x  | 6.x.x |
