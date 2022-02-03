@@ -6,19 +6,19 @@ export class TestPostActionComponent extends RxjsOnDestroy {
   order: string[] = [];
 
   constructor() {
-    super(() => this.myNgOnDestroyPostAction());
+    super(() => this.constructorAction());
   }
 
-  get exposedDestroy$(): Observable<boolean> {
+  get exposedDestroy$(): Observable<void> {
     return this.destroy$.pipe(tap(() => this.order.push('ngOnDestroy')));
   }
 
   override ngOnDestroyPostAction() {
-    this.order.push('ngOnPostDestroy');
+    this.order.push('ngOnDestroyPostAction');
   }
 
-  private myNgOnDestroyPostAction() {
-    this.order.push('myNgOnDestroyPostAction');
+  private constructorAction() {
+    this.order.push('constructorAction');
   }
 
   override ngOnDestroy() {

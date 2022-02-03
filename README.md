@@ -16,7 +16,7 @@ Because of DRY principle, for once.
 
 Also, one of the most common mistakes beginners make with RxJs and others may forget to avoid is to subscribe to an Observable in a fire-and-forget manner like so:
 
-```
+```typescript
 books$.subscribe(() => doSomething());
 ```
 
@@ -34,7 +34,7 @@ There are few ways to deal with unsubscribe. A direct:
 
 Package `ng-rxjs-safe-subscribe` provides a ready and easy to use solution for your every Angular project.
 
-# Installation instructions
+# Installation
 
 Install `ng-rxjs-safe-subscribe` from `npm`:
 
@@ -44,13 +44,13 @@ npm install ng-rxjs-safe-subscribe
 
 Import an abstract class:
 
-```
+```typescript
 import { RxjsOnDestroy } from 'ng-rxjs-safe-subscribe';
 ```
 
 Extend the class with `RxjsOnDestroy` that implements `OnDestroy` hook.
 
-```
+```typescript
 export class AppComponent extends RxjsOnDestroy
 ```
 
@@ -58,11 +58,17 @@ Finally, use one of the following approaches to subscribe in code using `Observa
 
 ## How to execute custom logic at `ngOnDestroy`
 
-Consider overriding the `ngOnDestroyPostAction()` function to execute a callback function at the very end of the `ngOnDestroy` function.
+Consider passing an arrow function with custom destroy logic to the constructor:
+
+```typescript
+    constructor() {
+        super(() => this.customDestroy());
+    }
+```
 
 The `ngOnDestroy` function can be also easily overridden, but be sure to <u>always call the base function</u> for `RxjsOnDestroy` to unsubscribe properly:
 
-```
+```typescript
     override ngOnDestroy(){
         super.ngOnDestroy();
 
@@ -70,17 +76,19 @@ The `ngOnDestroy` function can be also easily overridden, but be sure to <u>alwa
     }
 ```
 
+Typescript can help you avoid mistaken overrides with [noImplicitOverride](https://www.typescriptlang.org/tsconfig#noImplicitOverride) rule. It is HIGHLY RECOMMENDED to enable that.
+
 ## 1. Unsubscribe with a sink
 
 Subscribe safely, pass object which extends RxjsOnDestroy abstract class:
 
-```
+```typescript
 this.users$.subscribeSafely(rxjsOnDestroyInstance, (x) => console.log(x));
 ```
 
 Full example:
 
-```
+```typescript
 import { Component } from '@angular/core';
 import { RxjsOnDestroy } from 'ng-rxjs-safe-subscribe';
 import { Observable } from 'rxjs';
@@ -105,7 +113,7 @@ export class AppComponent extends RxjsOnDestroy {
 
 You may pass an observable instance that triggers unsubscribe by passing a value and completion:
 
-```
+```typescript
 this.users$.subscribeUntil(this.destroy$, (x) => console.log(x));
 ```
 
@@ -113,7 +121,7 @@ The example uses `this.destroy$` of `RxjsOnDestroy` class.
 
 Full example:
 
-```
+```typescript
 import { Component } from '@angular/core';
 import { RxjsOnDestroy } from 'ng-rxjs-safe-subscribe';
 import { Observable, fromEvent, merge } from 'rxjs';
@@ -141,7 +149,6 @@ export class AppComponent extends RxjsOnDestroy {
     this.users$.subscribeUntil(this.destroy$, (x) => console.log(x));
  }
 }
-
 ```
 
 You can now use stop to kill the subscription in the moment of your choosing, but nonetheless remember to always unsubscribe on object destruction.

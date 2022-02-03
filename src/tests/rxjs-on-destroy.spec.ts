@@ -16,8 +16,8 @@ describe('RxjsOnDestroy', () => {
   it('should call ngOnDestroy and post action', () => {
     const expectedExecutionOrder = [
       'ngOnDestroy',
-      'myNgOnDestroyPostAction',
-      'ngOnPostDestroy',
+      'constructorAction',
+      'ngOnDestroyPostAction',
       'override ngOnDestroy',
     ];
     const component = new TestPostActionComponent();

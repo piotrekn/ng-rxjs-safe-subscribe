@@ -2,8 +2,7 @@ import { OnDestroy } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 
 /**
- * Class is using Angular features but is not decorated. Please add an explicit Angular decorator.
- * But I had issues as of 11 as LTS.
+ * Class is using Angular features but is not decorated. Please add an explicit Angular decorator
  */
 export abstract class RxjsOnDestroy implements OnDestroy {
   protected destroySubscription = new Subscription();
@@ -11,6 +10,9 @@ export abstract class RxjsOnDestroy implements OnDestroy {
 
   constructor(protected ngOnDestroyPostActionFunction?: () => void) {}
 
+/**
+ * @deprecated The method will be removed. Please use super(() => {...}) instead
+ */
   // tslint:disable-next-line: no-empty
   ngOnDestroyPostAction() {}
 

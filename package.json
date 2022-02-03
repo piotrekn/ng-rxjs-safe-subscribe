@@ -1,6 +1,6 @@
 {
   "name": "ng-rxjs-safe-subscribe",
-  "version": "13.0.0",
+  "version": "13.0.1",
   "description": "Implementation of Angular's repeatable OnDestroy pattern with RxJS observables",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
