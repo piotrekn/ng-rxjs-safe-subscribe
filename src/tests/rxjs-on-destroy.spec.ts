@@ -6,11 +6,11 @@ import { TestPostActionComponent } from './test-post-action-component';
 
 describe('RxjsOnDestroy', () => {
   let counter: Counter;
-  let subject: Subject<number>;
+  let subject: Subject<void>;
 
   beforeEach(() => {
     counter = new Counter();
-    subject = new Subject<number>();
+    subject = new Subject<void>();
   });
 
   it('should call ngOnDestroy and post action', () => {
@@ -24,9 +24,9 @@ describe('RxjsOnDestroy', () => {
     subject.subscribeSafely(component, () => counter.increment());
     component.exposedDestroy$.subscribe();
 
-    subject.next(1);
+    subject.next();
     component.ngOnDestroy();
-    subject.next(1);
+    subject.next();
 
     expect(component.order).toStrictEqual(expectedExecutionOrder);
     expect(counter.count).toBe(1);
@@ -36,9 +36,9 @@ describe('RxjsOnDestroy', () => {
     const component = new TestIncorrectComponent();
     subject.subscribeSafely(component, () => counter.increment());
 
-    subject.next(1);
+    subject.next();
     component.ngOnDestroy();
-    subject.next(1);
+    subject.next();
 
     expect(component.hasLocalNgOnDestroyExecuted).toBeTruthy();
     expect(counter.count).toBe(2); // not 1 unfortunately

@@ -1,5 +1,5 @@
-import { merge, of, Subject } from 'rxjs';
-import { count, map, shareReplay, toArray } from 'rxjs/operators';
+import { merge, Observable, of, Subject } from 'rxjs';
+import { map, shareReplay, tap, toArray } from 'rxjs/operators';
 import '../observable.extension';
 import { RxjsOnDestroy } from '../rxjs-on-destroy';
 import { Counter } from './counter';
@@ -8,11 +8,11 @@ import { UntilTestComponent } from './until-test.component';
 
 describe('RxjsOnDestroy', () => {
   let counter: Counter;
-  let subject: Subject<number>;
+  let subject: Subject<void>;
 
   beforeEach(() => {
     counter = new Counter();
-    subject = new Subject<number>();
+    subject = new Subject<void>();
   });
 
   describe('subscribeSafely', () => {
@@ -20,6 +20,58 @@ describe('RxjsOnDestroy', () => {
 
     beforeEach(() => {
       component = new TestComponent();
+    });
+
+    it('should call complete callback ', () => {
+      subject.subscribeSafely(
+        component,
+        () => counter.increment(),
+        () => {},
+        () => counter.increment(),
+      );
+
+      testSubscribeSafely(subject, counter, component, true);
+    });
+
+    it('should call complete callback with Partial<Observer<T> overload', () => {
+      subject.subscribeSafely(component, {
+        next: () => counter.increment(),
+        error: () => {},
+        complete: () => counter.increment(),
+      });
+
+      testSubscribeSafely(subject, counter, component, true);
+    });
+
+    it('should call error callback', () => {
+      const nextCounter = new Counter();
+      const errorCounter = new Counter();
+      const subject = new Subject<boolean>();
+      const action = (subject: Observable<boolean>) => {
+        subject.subscribeSafely(
+          component,
+          () => nextCounter.increment(),
+          () => errorCounter.increment(),
+          () => {},
+        );
+      };
+
+      expectErrorCallbackToBeCalled(action, subject, counter, nextCounter, errorCounter);
+    });
+
+    it('should call error callback with Partial<Observer<T> overload', () => {
+      const nextCounter = new Counter();
+      const errorCounter = new Counter();
+      const subject = new Subject<boolean>();
+      const action = (subject: Observable<boolean>) => {
+        subject.subscribeSafely(component, {
+          next: () => nextCounter.increment(),
+          error: () => errorCounter.increment(),
+          complete: () => {},
+        });
+      };
+
+      expectErrorCallbackToBeCalled(action, subject, counter, nextCounter, errorCounter);
     });
 
     it('should use generic type in subscribe', () => {
@@ -46,7 +98,7 @@ describe('RxjsOnDestroy', () => {
       testSubscribeSafely(subject, counter, component);
     });
 
-    it('should work not unsubscribe other subscriptions ', () => {
+    it('should not unsubscribe other subscriptions ', () => {
       const counter2 = new Counter();
 
       const observable = subject.pipe(shareReplay());
@@ -59,12 +111,12 @@ describe('RxjsOnDestroy', () => {
 
       testSubscribeSafely(subject, counter, component);
 
-      expect(counter2.count).toBe(2);
-      expect(counter.count).toBe(1);
-      subject.next(9);
-
       expect(counter2.count).toBe(3);
-      expect(counter.count).toBe(1);
+      expect(counter.count).toBe(2);
+      subject.next();
+
+      expect(counter2.count).toBe(4);
+      expect(counter.count).toBe(2);
     });
 
     it('should work with shareReplay', () => {
@@ -74,9 +126,9 @@ describe('RxjsOnDestroy', () => {
     });
 
     it('should work with "count"', () => {
-      subject.pipe(count()).subscribeSafely(component, (n) => counter.assign(n));
+      subject.subscribeSafely(component, () => counter.increment());
 
-      testSubscribeSafelyWhenCompleted(subject, counter, component);
+      testSubscribeSafely(subject, counter, component);
     });
 
     it('should work with "toArray"', () => {
@@ -98,24 +150,76 @@ describe('RxjsOnDestroy', () => {
       component = new UntilTestComponent();
     });
 
+    it('should call complete callback ', () => {
+      subject.subscribeUntil(
+        component.destroyExposed$,
+        () => counter.increment(),
+        () => {},
+        () => counter.increment(),
+      );
+
+      testSubscribeSafelyUntil(component.destroySpy, subject, counter, component, true);
+    });
+
+    it('should call complete callback with Partial<Observer<T> overload', () => {
+      subject.subscribeUntil(component.destroyExposed$, {
+        next: () => counter.increment(),
+        error: () => {},
+        complete: () => counter.increment(),
+      });
+
+      testSubscribeSafelyUntil(component.destroySpy, subject, counter, component, true);
+    });
+
+    it('should call error callback', () => {
+      const nextCounter = new Counter();
+      const errorCounter = new Counter();
+      const subject = new Subject<boolean>();
+      const action = (subject: Observable<boolean>) => {
+        subject.subscribeUntil(
+          component.destroyExposed$,
+          () => nextCounter.increment(),
+          () => errorCounter.increment(),
+          () => {},
+        );
+      };
+
+      expectErrorCallbackToBeCalled(action, subject, counter, nextCounter, errorCounter);
+    });
+
+    it('should call error callback with Partial<Observer<T> overload', () => {
+      const nextCounter = new Counter();
+      const errorCounter = new Counter();
+      const subject = new Subject<boolean>();
+      const action = (subject: Observable<boolean>) => {
+        subject.subscribeUntil(component.destroyExposed$, {
+          next: () => nextCounter.increment(),
+          error: () => errorCounter.increment(),
+          complete: () => {},
+        });
+      };
+
+      expectErrorCallbackToBeCalled(action, subject, counter, nextCounter, errorCounter);
+    });
+
     it('should unsubscribe using passed observable', () => {
-      const cancel$ = new Subject<boolean>();
-      const destroy$ = new Subject<boolean>();
+      const cancel$ = new Subject<void>();
+      const destroy$ = new Subject<void>();
       const stop$ = merge(cancel$, destroy$);
 
       expect(counter.count).toBe(0);
       subject.subscribeUntil(stop$, () => (counter.count += 1));
       subject.subscribeUntil(destroy$, () => (counter.count += 10));
 
-      subject.next(1);
+      subject.next();
       expect(counter.count).toBe(11);
 
       cancel$.next();
-      subject.next(2);
+      subject.next();
       expect(counter.count).toBe(21);
 
       destroy$.next();
-      subject.next(2);
+      subject.next();
       expect(counter.count).toBe(21);
     });
 
@@ -131,7 +235,7 @@ describe('RxjsOnDestroy', () => {
       testSubscribeSafelyUntil(component.destroySpy, subject, counter, component);
     });
 
-    it('should work not unsubscribe other subscriptions ', () => {
+    it('should not unsubscribe other subscriptions ', () => {
       const counter2 = new Counter();
 
       const observable = subject.pipe(shareReplay());
@@ -142,12 +246,12 @@ describe('RxjsOnDestroy', () => {
 
       testSubscribeSafelyUntil(component.destroySpy, subject, counter, component);
 
-      expect(counter2.count).toBe(2);
-      expect(counter.count).toBe(1);
-      subject.next(9);
-
       expect(counter2.count).toBe(3);
-      expect(counter.count).toBe(1);
+      expect(counter.count).toBe(2);
+      subject.next();
+
+      expect(counter2.count).toBe(4);
+      expect(counter.count).toBe(2);
     });
 
     it('should work with shareReplay', () => {
@@ -157,9 +261,9 @@ describe('RxjsOnDestroy', () => {
     });
 
     it('should work with "count"', () => {
-      subject.pipe(count()).subscribeUntil(component.destroyExposed$, (n: number) => counter.assign(n));
+      subject.subscribeUntil(component.destroyExposed$, () => counter.increment());
 
-      testSubscribeSafelyWhenCompleted(subject, counter, component);
+      testSubscribeSafely(subject, counter, component);
     });
 
     it('should work with "toArray"', () => {
@@ -175,40 +279,81 @@ describe('RxjsOnDestroy', () => {
   });
 });
 
-function testSubscribeSafely(subject: Subject<number>, counter: Counter, component: RxjsOnDestroy) {
+function expectErrorCallbackToBeCalled(
+  action: (subject: Observable<boolean>) => void,
+  subject: Subject<boolean>,
+  counter: Counter,
+  nextCounter: Counter,
+  errorCounter: Counter,
+) {
+  action(
+    subject.pipe(
+      tap((shouldThrow) => {
+        if (shouldThrow) {
+          throw new Error();
+        }
+      }),
+    ),
+  );
+  expect(counter.count).toBe(0);
+
+  subject.next(false);
+  expect(nextCounter.count).toBe(1);
+  expect(errorCounter.count).toBe(0);
+
+  subject.next(true);
+  expect(nextCounter.count).toBe(1);
+  expect(errorCounter.count).toBe(1);
+
+  subject.complete();
+  expect(nextCounter.count).toBe(1);
+  expect(errorCounter.count).toBe(1);
+}
+
+function testSubscribeSafely(
+  subject: Subject<void>,
+  counter: Counter,
+  component: RxjsOnDestroy,
+  isIncrementedOnComplete = false,
+) {
   // start point
   expect(counter.count).toBe(0);
 
   // simulate observable value
-  subject.next(10);
-  expect(counter.count).toBe(1);
+  subject.next();
+  subject.next();
+  expect(counter.count).toBe(2);
+  if (isIncrementedOnComplete) {
+    subject.complete();
+  }
 
   // destroy parent and cancel observable
   component.ngOnDestroy();
 
   // next value should not be triggered
-  subject.next(100);
-  expect(counter.count).toBe(1);
+  subject.next();
+  expect(counter.count).toBe(2 + (isIncrementedOnComplete ? 1 : 0));
 }
 
 function testSubscribeSafelyUntil(
-  destroySpy: any,
-  subject: Subject<number>,
+  destroySpy: jest.SpyInstance<void, [value?: void]>,
+  subject: Subject<void>,
   counter: Counter,
   component: RxjsOnDestroy,
+  incrementOnComplete = false,
 ) {
   expect(destroySpy).toBeCalledTimes(0);
-  testSubscribeSafely(subject, counter, component);
+  testSubscribeSafely(subject, counter, component, incrementOnComplete);
   expect(destroySpy).toBeCalledTimes(1);
 }
 
-function testSubscribeSafelyWhenCompleted(subject: Subject<number>, counter: Counter, component: RxjsOnDestroy) {
+function testSubscribeSafelyWhenCompleted(subject: Subject<void>, counter: Counter, component: RxjsOnDestroy) {
   // start point
   expect(counter.count).toBe(0);
 
   // simulate observable value
-  subject.next(10);
-  subject.next(20);
+  subject.next();
+  subject.next();
   expect(counter.count).toBe(0);
 
   subject.complete();
@@ -218,6 +363,6 @@ function testSubscribeSafelyWhenCompleted(subject: Subject<number>, counter: Cou
 
   // next value should not be triggered
   expect(counter.count).toBe(2);
-  subject.next(100);
+  subject.next();
   expect(counter.count).toBe(2);
 }
