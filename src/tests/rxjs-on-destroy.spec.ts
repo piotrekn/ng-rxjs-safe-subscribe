@@ -14,12 +14,7 @@ describe('RxjsOnDestroy', () => {
   });
 
   it('should call ngOnDestroy and post action', () => {
-    const expectedExecutionOrder = [
-      'ngOnDestroy',
-      'constructorAction',
-      'ngOnDestroyPostAction',
-      'override ngOnDestroy',
-    ];
+    const expectedExecutionOrder = ['ngOnDestroy', 'constructorAction', 'override ngOnDestroy'];
     const component = new TestPostActionComponent();
     subject.subscribeSafely(component, () => counter.increment());
     component.exposedDestroy$.subscribe();

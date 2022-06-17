@@ -10,12 +10,6 @@ export abstract class RxjsOnDestroy implements OnDestroy {
 
   constructor(protected ngOnDestroyPostActionFunction?: () => void) {}
 
-/**
- * @deprecated The method will be removed. Please use super(() => {...}) instead
- */
-  // tslint:disable-next-line: no-empty
-  ngOnDestroyPostAction() {}
-
   ngOnDestroy() {
     this.destroySubscription.unsubscribe();
     this.destroy$.next();
@@ -24,6 +18,5 @@ export abstract class RxjsOnDestroy implements OnDestroy {
     if (this.ngOnDestroyPostActionFunction != null) {
       this.ngOnDestroyPostActionFunction();
     }
-    this.ngOnDestroyPostAction();
   }
 }

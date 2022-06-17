@@ -13,10 +13,6 @@ export class TestPostActionComponent extends RxjsOnDestroy {
     return this.destroy$.pipe(tap(() => this.order.push('ngOnDestroy')));
   }
 
-  override ngOnDestroyPostAction() {
-    this.order.push('ngOnDestroyPostAction');
-  }
-
   private constructorAction() {
     this.order.push('constructorAction');
   }
