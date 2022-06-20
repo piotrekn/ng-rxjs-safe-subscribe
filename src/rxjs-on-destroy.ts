@@ -8,6 +8,7 @@ export abstract class RxjsOnDestroy implements OnDestroy {
   protected destroySubscription = new Subscription();
   protected destroy$ = new Subject<void>();
 
+  // eslint-disable-next-line no-empty-function
   constructor(protected ngOnDestroyPostActionFunction?: () => void) {}
 
   ngOnDestroy() {

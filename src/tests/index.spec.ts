@@ -1,3 +1,6 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
+/* eslint-disable no-empty-function, @typescript-eslint/no-empty-function */
+/* eslint-disable no-shadow, @typescript-eslint/no-shadow*/
 import { merge, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, tap, toArray } from 'rxjs/operators';
 import '../observable.extension';

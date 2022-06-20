@@ -6,14 +6,14 @@ function subscribeSafely<T>(
   this: Observable<T>,
   classRef: RxjsOnDestroy,
   observerOrNext?: Partial<Observer<T>> | ((value: T) => void) | null,
-  error?: ((error: any) => void) | null,
+  error?: ((err: any) => void) | null,
   complete?: (() => void) | null,
 ): Subscription {
   if (typeof classRef !== 'object') {
     throw new Error(`Pass 'this' or other '${RxjsOnDestroy.constructor.name}' object`);
   }
 
-  // tslint:disable-next-line: no-string-literal
+  // eslint-disable-next-line dot-notation, @typescript-eslint/dot-notation
   if (typeof classRef.ngOnDestroy !== 'function' || classRef['destroySubscription'] == null) {
     throw Error(
       `${classRef.constructor.name} - missing NgOnDestroy function, extend from ${RxjsOnDestroy.constructor.name}`,
@@ -23,7 +23,7 @@ function subscribeSafely<T>(
   const partialObservable = isObserver<T>(observerOrNext) ? observerOrNext : { error, complete, next: observerOrNext };
   const subscription = this.subscribe(partialObservable as Subscriber<T>);
 
-  // tslint:disable-next-line: no-string-literal
+  // eslint-disable-next-line dot-notation, @typescript-eslint/dot-notation
   classRef['destroySubscription'].add(subscription);
   return subscription;
 }
@@ -32,7 +32,7 @@ function subscribeUntil<T>(
   this: Observable<T>,
   unsubscribeToken: Observable<any>,
   observerOrNext?: Partial<Observer<T>> | ((value: T) => void) | null,
-  error?: ((error: any) => void) | null,
+  error?: ((err: any) => void) | null,
   complete?: (() => void) | null,
 ): Subscription {
   if (typeof unsubscribeToken !== 'object') {
@@ -50,22 +50,26 @@ function subscribeUntil<T>(
   return this.pipe(takeUntil(unsubscribeToken)).subscribe(partialObservable as Subscriber<T>);
 }
 
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function isObserver<T>(value: any): value is Observer<T> {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
   return value && isFunction(value.next) && isFunction(value.error) && isFunction(value.complete);
 }
 
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function isFunction(value: any): value is (...args: any[]) => any {
   return typeof value === 'function';
 }
 
 declare module 'rxjs/internal/Observable' {
+  // eslint-disable-next-line no-shadow
   interface Observable<T> {
     /** @deprecated it'll be removed in future updates. Use subscribeSafely alias */
     safeSubscribe(
       this: Observable<T>,
       classRef: RxjsOnDestroy,
       next?: ((value: T) => void) | undefined,
-      error?: ((error: any) => void) | undefined,
+      error?: ((err: any) => void) | undefined,
       complete?: (() => void) | undefined,
     ): Subscription;
     subscribeSafely(this: Observable<T>, classRef: RxjsOnDestroy, observer?: Partial<Observer<T>>): Subscription;
@@ -75,7 +79,7 @@ declare module 'rxjs/internal/Observable' {
       this: Observable<T>,
       classRef: RxjsOnDestroy,
       next?: ((value: T) => void) | undefined,
-      error?: ((error: any) => void) | undefined,
+      error?: ((err: any) => void) | undefined,
       complete?: (() => void) | undefined,
     ): Subscription;
     subscribeUntil(
@@ -89,7 +93,7 @@ declare module 'rxjs/internal/Observable' {
       this: Observable<T>,
       unsubscribeToken: Observable<any>,
       next?: ((value: T) => void) | undefined,
-      error?: ((error: any) => void) | undefined,
+      error?: ((err: any) => void) | undefined,
       complete?: (() => void) | undefined,
     ): Subscription;
   }
