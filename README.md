@@ -12,17 +12,41 @@ Implementation of <a href="https://angular.io/">Angular's</a> repeatable OnDestr
 
 # Why do I need it?
 
-Because of DRY principle, for once.
-
-Also, one of the most common mistakes beginners make with RxJs and others may forget to avoid is to subscribe to an Observable in a fire-and-forget manner like so:
+Because of the DRY principle. Instead of reimplementing the pattern in every component:
 
 ```typescript
-books$.subscribe(() => doSomething());
+export class MyComponent implements OnDestroy {
+  private booksSubscription: Subscription;
+
+  getBooks(): void {
+    this.booksSubscription = this.booksService.getBooks().subscribe((books) =>
+      (...)
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.booksSubscription.unsubscribe();
+  }
+}
 ```
 
-Rule of thumb is that a subscriber should unsubscribe when no longer using an observable. If there is no explicit unsubscribe, then those books will be pushed to subscribe function infinitely. While it may not be the case for some observable sources, it almost always is. Finally, it causes a <i>leaks</i> leading to unwanted behaviors.
+simplify the code and just subscribe safely:
 
-There are few ways to deal with unsubscribe. A direct:
+```typescript
+export class MyComponent extends RxjsOnDestroy {
+  getBooks(): void {
+    this.booksService.getBooks().subscribeSafely(this, (books) =>
+      (...)
+    );
+  }
+}
+```
+
+One of the most common mistakes made with RxJS is subscribing to an Observable in a fire-and-forget manner.
+
+A rule of thumb is that a subscriber should unsubscribe when no longer using an observable. If there is no explicit unsubscribe, then those books will be pushed to subscribe function infinitely. While it may not be the case for some observable sources, it can silently become an issue and cause a <i>leaks</i> leading to unwanted behaviors.
+
+There are a few ways to deal with unsubscribing. A direct:
 
 1. calling unsubscribe() directly on subscription.
 
@@ -32,7 +56,7 @@ There are few ways to deal with unsubscribe. A direct:
 3. taking a finite number of values: first, take(n) - it'll unsubscribe after n emits, and only then,
 4. async pipe in HTML template - takes care of the issue automagically.
 
-Package `ng-rxjs-safe-subscribe` provides a ready and easy to use solution for your every Angular project.
+Package `ng-rxjs-safe-subscribe` provides a ready-to-use solution for every Angular project.
 
 # Installation
 
@@ -48,7 +72,7 @@ Import an abstract class:
 import { RxjsOnDestroy } from 'ng-rxjs-safe-subscribe';
 ```
 
-Extend the class with `RxjsOnDestroy` that implements `OnDestroy` hook.
+Extend the class with `RxjsOnDestroy` that implements the `OnDestroy` hook.
 
 ```typescript
 export class AppComponent extends RxjsOnDestroy
@@ -80,7 +104,7 @@ Typescript can help you avoid mistaken overrides with [noImplicitOverride](https
 
 ## 1. Unsubscribe with a sink
 
-Subscribe safely, pass object which extends RxjsOnDestroy abstract class:
+Subscribe safely, pass an object which extends RxjsOnDestroy abstract class:
 
 ```typescript
 this.users$.subscribeSafely(rxjsOnDestroyInstance, (x) => console.log(x));
@@ -151,22 +175,25 @@ export class AppComponent extends RxjsOnDestroy {
 }
 ```
 
-You can now use stop to kill the subscription in the moment of your choosing, but nonetheless remember to always unsubscribe on object destruction.
+You can now use stop to kill the subscription in the moment of your choosing, but remember to always unsubscribe on object destruction.
 
-Read up [Ben Lesh's article](https://medium.com/@benlesh/rxjs-dont-unsubscribe-6753ed4fda87) for more in this topic.
+Read up [Ben Lesh's article](https://medium.com/@benlesh/rxjs-dont-unsubscribe-6753ed4fda87) for more on this topic.
 
 # Compatibility
 
-The only two dependencies are [Angular](https://angular.io) and [RxJs](https://rxjs-dev.firebaseapp.com/guide/overview).
+The only two dependencies are [Angular](https://angular.io) and [RxJS](https://rxjs-dev.firebaseapp.com/guide/overview).
 Here is the versions compatibility list:
 
-| ng-rxjs-safe-subscribe | Angular | RxJs  |
+| ng-rxjs-safe-subscribe | Angular | RxJS  |
 | ---------------------- | ------- | ----- |
+| 14.x.x                 | 14.x.x  | 7.x.x |
 | 13.x.x                 | 13.x.x  | 7.x.x |
 | 12.x.x                 | 12.x.x  | 6.x.x |
 | 11.x.x                 | 11.x.x  | 6.x.x |
 | 10.x.x                 | 10.x.x  | 6.x.x |
 | 9.x.x                  | 9.x.x   | 6.x.x |
+
+The package should work with every version of Angular, as long as the RxJS version is matching yours.
 
 # License
 
