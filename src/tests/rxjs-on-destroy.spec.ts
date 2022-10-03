@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import '../observable.extension';
 import { Counter } from './counter';
 import { TestIncorrectComponent } from './test-incorrect-component';
@@ -37,5 +37,15 @@ describe('RxjsOnDestroy', () => {
 
     expect(component.hasLocalNgOnDestroyExecuted).toBeTruthy();
     expect(counter.count).toBe(2); // not 1 unfortunately
+  });
+
+  it('should work with partial object', () => {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function, no-empty-function
+    const mockFunction = () => {};
+    const component = new TestIncorrectComponent();
+    const partialObservable = { next: mockFunction, error: mockFunction, complete: mockFunction };
+
+    expect(() => of(1).subscribeSafely(component, partialObservable)).not.toThrowError();
+    expect(() => of(1).subscribeSafely(component, mockFunction)).not.toThrowError();
   });
 });

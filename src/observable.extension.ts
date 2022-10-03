@@ -1,4 +1,4 @@
-import { Observable, Observer, Subscriber, Subscription } from 'rxjs';
+import { Observable, Observer, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { RxjsOnDestroy } from './rxjs-on-destroy';
 
@@ -20,8 +20,9 @@ function subscribeSafely<T>(
     );
   }
 
-  const partialObservable = isObserver<T>(observerOrNext) ? observerOrNext : { error, complete, next: observerOrNext };
-  const subscription = this.subscribe(partialObservable as Subscriber<T>);
+  // TODO The underlying function is actually a Union type. This line may change in v8
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const subscription = this.subscribe(observerOrNext as any, error, complete);
 
   // eslint-disable-next-line dot-notation, @typescript-eslint/dot-notation
   classRef['destroySubscription'].add(subscription);
@@ -44,21 +45,9 @@ function subscribeUntil<T>(
     throw Error(`Is '${unsubscribeToken.constructor.name}' value passed really the Observable or Subject?`);
   }
 
-  const partialObservable = isObserver<T>(observerOrNext) ? observerOrNext : { error, complete, next: observerOrNext };
-
-  // tslint:disable-next-line: no-string-literal
-  return this.pipe(takeUntil(unsubscribeToken)).subscribe(partialObservable as Subscriber<T>);
-}
-
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-function isObserver<T>(value: any): value is Observer<T> {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-  return value && isFunction(value.next) && isFunction(value.error) && isFunction(value.complete);
-}
-
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-function isFunction(value: any): value is (...args: any[]) => any {
-  return typeof value === 'function';
+  // TODO The underlying function is actually a Union type. This line may change in v8
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  return this.pipe(takeUntil(unsubscribeToken)).subscribe(observerOrNext as any, error, complete);
 }
 
 declare module 'rxjs/internal/Observable' {
