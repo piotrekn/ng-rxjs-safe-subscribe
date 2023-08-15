@@ -186,13 +186,13 @@ Here is the versions compatibility list:
 
 | ng-rxjs-safe-subscribe | Angular | RxJS  |
 | ---------------------- | ------- | ----- |
+| 16.x.x                 | 16.x.x  | 7.x.x |
 | 15.x.x                 | 15.x.x  | 7.x.x |
 | 14.x.x                 | 14.x.x  | 7.x.x |
 | 13.x.x                 | 13.x.x  | 7.x.x |
 | 12.x.x                 | 12.x.x  | 6.x.x |
 | 11.x.x                 | 11.x.x  | 6.x.x |
 | 10.x.x                 | 10.x.x  | 6.x.x |
-| 9.x.x                  | 9.x.x   | 6.x.x |
 
 The package should work with every version of Angular, as long as the RxJS version is matching yours.
 

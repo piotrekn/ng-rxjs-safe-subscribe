@@ -5,11 +5,11 @@ import { Subject, Subscription } from 'rxjs';
  * Class is using Angular features but is not decorated. Please add an explicit Angular decorator
  */
 export abstract class RxjsOnDestroy implements OnDestroy {
-  protected destroySubscription = new Subscription();
-  protected destroy$ = new Subject<void>();
+  protected readonly destroySubscription = new Subscription();
+  protected readonly destroy$ = new Subject<void>();
 
   // eslint-disable-next-line no-empty-function
-  constructor(protected ngOnDestroyPostActionFunction?: () => void) {}
+  constructor(protected readonly ngOnDestroyPostActionFunction?: () => void) {}
 
   ngOnDestroy() {
     this.destroySubscription.unsubscribe();
