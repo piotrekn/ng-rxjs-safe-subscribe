@@ -186,6 +186,7 @@ Here is the versions compatibility list:
 
 | ng-rxjs-safe-subscribe | Angular | RxJS  |
 | ---------------------- | ------- | ----- |
+| 17.x.x                 | 17.x.x  | 7.x.x |
 | 16.x.x                 | 16.x.x  | 7.x.x |
 | 15.x.x                 | 15.x.x  | 7.x.x |
 | 14.x.x                 | 14.x.x  | 7.x.x |
