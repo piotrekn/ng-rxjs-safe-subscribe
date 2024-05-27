@@ -179,6 +179,10 @@ You can now use stop to kill the subscription in the moment of your choosing, bu
 
 Read up [Ben Lesh's article](https://medium.com/@benlesh/rxjs-dont-unsubscribe-6753ed4fda87) for more on this topic.
 
+# What about Signals?
+
+Signals can be an answer to this kind of issue. If you just want to provide a value from rxjs Observable, consider using Signals.
+
 # Compatibility
 
 The only two dependencies are [Angular](https://angular.io) and [RxJS](https://rxjs-dev.firebaseapp.com/guide/overview).
@@ -186,6 +190,7 @@ Here is the versions compatibility list:
 
 | ng-rxjs-safe-subscribe | Angular | RxJS  |
 | ---------------------- | ------- | ----- |
+| 18.x.x                 | 18.x.x  | 7.x.x |
 | 17.x.x                 | 17.x.x  | 7.x.x |
 | 16.x.x                 | 16.x.x  | 7.x.x |
 | 15.x.x                 | 15.x.x  | 7.x.x |

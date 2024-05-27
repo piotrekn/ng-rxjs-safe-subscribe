@@ -1,6 +1,6 @@
 {
   "name": "ng-rxjs-safe-subscribe",
-  "version": "17.0.0",
+  "version": "18.0.0",
   "description": "Implementation of Angular's repeatable OnDestroy pattern with RxJS observables",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -33,7 +33,7 @@
     "ng"
   ],
   "dependencies": {
-    "@angular/core": "^17",
+    "@angular/core": "^18",
     "rxjs": "^7"
   },
   "devDependencies": {
