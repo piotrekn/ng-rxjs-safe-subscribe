@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
     "target": "es2015",
     "module": "es2020",
     "moduleResolution": "node",
